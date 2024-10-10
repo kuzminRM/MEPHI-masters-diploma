@@ -1,0 +1,6 @@
+/.env.local*
+/.env
+/.idea
+__pycache__/
+*.drawio.svg.bkp
+*.drawio.svg.dtmp

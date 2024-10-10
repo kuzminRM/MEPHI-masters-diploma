@@ -1,0 +1,53 @@
+repos:
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 'v4.6.0'
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-toml
+      - id: double-quote-string-fixer
+
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v3.1.0
+    hooks:
+      - id: add-trailing-comma
+
+  - repo: https://github.com/myint/autoflake
+    rev: 'v1.4'
+    hooks:
+      - id: autoflake
+        args: [--remove-all-unused-imports, --in-place]
+
+    # sort __all__
+  - repo: https://github.com/cpendery/asort
+    rev: 'v0.1.3'
+    hooks:
+      - id: asort
+
+  - repo: local
+    hooks:
+
+      - id: isort
+        name: isort
+        entry: isort
+        language: system
+        files: ^(src|tests)/.+\.py$
+
+      - id: black
+        name: black
+        entry: black
+        language: system
+        files: ^(src|tests)/.+\.py$
+
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        files: ^(src|tests)/.+\.py$
+
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        files: ^(src)/.+\.py$
