@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 class StoreEnum(StrEnum):
     STROYDVOR = 'STROYDVOR'
+    OBI = 'OBI'
 
 
 class CategoryEnum(StrEnum):
