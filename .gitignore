@@ -4,3 +4,7 @@
 __pycache__/
 *.drawio.svg.bkp
 *.drawio.svg.dtmp
+*.log
+*.csv
+*.html
+*.json

@@ -24,6 +24,33 @@ r = requests.get(
 )
 j = r.json()
 
+r_short = (
+    'https://api-ecomm.sdvor.com/occ/v2/sd/products/search?'
+    'fields=algorithmsForAddingRelatedProducts%2CcategoryCode%2Cproducts(code%2Cslug)%2Cpagination(DEFAULT)&'
+    'currentPage=0&'
+    'pageSize=18&'
+    'sort=personal-price-asc&'
+    'facets=allCategories%3Ashtukaturki-5584&'
+    'lang=ru&'
+    'curr=RUB&'
+    'deviceType=tablet&'
+    'baseStore=moscow'
+)
+
 menu = 'https://api-ecomm.sdvor.com/occ/v2/sd/cms/menu?fields=DEFAULT&nodeId=SdCategoryNavNode&level=1&lang=ru&curr=RUB&deviceType=tablet&baseStore=moscow'
 menu2 = 'https://api-ecomm.sdvor.com/occ/v2/sd/cms/menu?fields=DEFAULT&nodeId=stroitelnye-materialy-5521NavNode&level=1&lang=ru&curr=RUB&deviceType=tablet&baseStore=moscow'
 menu3 = 'https://api-ecomm.sdvor.com/occ/v2/sd/cms/menu?fields=DEFAULT&nodeId=stroitelnye-smesi-gruntovki-10991NavNode&level=1&lang=ru&curr=RUB&deviceType=tablet&baseStore=moscow'
+
+
+#
+#
+#
+
+from parsers.runnures.stroydvor.parser import *
+api_product = SingleProductPageApiData(
+    code='56429',
+    slug='shtukaturka-gipsovaja-universalnaja-knauf-rotband-30-kg',
+)
+url = get_product_url(api_product)
+response = call_api(url)
+soup = BeautifulSoup(response.text, "html.parser")

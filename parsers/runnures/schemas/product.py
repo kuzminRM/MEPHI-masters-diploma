@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
+from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
@@ -10,14 +11,17 @@ class StoreEnum(StrEnum):
 
 
 class CategoryEnum(StrEnum):
-    PLASTER = 'штукатурка'
+    STROITELNIE_SMESI = 'STROITELNIE_SMESI'
+    NDY = 'NOT_DEFINED_YET'
 
 
 class Product(BaseModel):
+    uid: str
     store: StoreEnum
     title: str
+    url: str
     category: CategoryEnum
-    description: str
+    description: str | None = None
     images: list[str] = Field(default_factory=list)
     price: float
     properties: PropertiesData
@@ -25,17 +29,34 @@ class Product(BaseModel):
 
 class PropertiesData(BaseModel):
     as_text: str
-    as_dict: dict[str, str]
-    brand: str | None
-    country: str | None
-    mass: MassData
-    dimensions: MassData
+    as_dict: dict[str, str] | None = None
+    brand: str | None = None
+    label: str | None = None
+    country: str | None = None
+    color: str | None = None
+    material: str | None = None
+    mass: MassData | None = None
+    volume: VolumeData | None = None
+    dimensions: DimensionsData | None = None
     art_codes: list[str] = Field(default_factory=list)
-    art_code_global: str | None
+    category_list_raw: list[str] = Field(default_factory=list)
+
+
+class VolumeUnitsEnum(StrEnum):
+    LITER = 'l'
+    MILLILITER = 'ml'
+
+
+class VolumeData(BaseModel):
+    raw: str | None
+    num: float | None
+    unit: VolumeUnitsEnum | None
 
 
 class MassUnitsEnum(StrEnum):
+    TONNE = 't'
     KILOGRAM = 'kg'
+    GRAM = 'gr'
 
 
 class MassData(BaseModel):
@@ -51,9 +72,7 @@ class DimensionUnitsEnum(StrEnum):
 
 
 class DimensionsData(BaseModel):
-    """d1-d3 отсортированы по убыванию"""
+    """d_list отсортирован по убыванию"""
     raw: str | None
-    d1: float | None
-    d2: float | None
-    d3: float | None
-    unit: DimensionUnitsEnum | None
+    d_list: list[float] = Field(default_factory=list)
+    all_units_parsed: bool | None
