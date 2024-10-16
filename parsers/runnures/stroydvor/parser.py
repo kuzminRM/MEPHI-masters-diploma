@@ -59,7 +59,6 @@ def start_parser():
                 counter += 1
             if counter % 100 == 0:
                 logger.info(f'####################################### Parsed {counter} products #######################################')
-                break
 
 
 def parse_product(api_product: SingleProductPageApiData) -> Product | None:

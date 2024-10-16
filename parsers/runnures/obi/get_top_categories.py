@@ -10,15 +10,15 @@ category_links = {
     'Лакокрасочные материалы': 'https://obi.ru/lakokrasochnye-materialy',
     'Столярные изделия': 'https://obi.ru/stoljarnye-izdelija',
     'Сад и досуг': 'https://obi.ru/sad-i-dosug',
-    'Хозяйственные товары': 'https://obi.ru/hozjajstvennye-tovary',
-    'Хранение и порядок': 'https://obi.ru/hranenie-i-porjadok',
-    'Декор': 'https://obi.ru/dekor',
     'Освещение': 'https://obi.ru/osveschenie',
     'Климат и отопление': 'https://obi.ru/klimat-i-otoplenie',
     'Кухни': 'https://obi.ru/kuhni',
     'Электрика': 'https://obi.ru/jelektrika',
     'Инженерные системы': 'https://obi.ru/inzhenernye-sistemy',
+    'Декор': 'https://obi.ru/dekor',
     'Окна и двери': 'https://obi.ru/okna-i-dveri',
+    'Хозяйственные товары': 'https://obi.ru/hozjajstvennye-tovary',
+    'Хранение и порядок': 'https://obi.ru/hranenie-i-porjadok',
     'Автотовары': 'https://obi.ru/avtotovary',
 }
 

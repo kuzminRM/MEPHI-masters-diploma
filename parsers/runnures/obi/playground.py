@@ -4,7 +4,7 @@ service_log()
 category_link = 'https://obi.ru/strojmaterialy'
 
 current_page = 1
-page_url = get_product_url(category_link, current_page)
+page_url = get_product_page_url(category_link, current_page)
 response: Response | None = call_api(page_url)
 if response:
     soup = BeautifulSoup(response.text, "html.parser")
