@@ -15,6 +15,7 @@ from parsers.runnures.schemas.product import Product, StoreEnum, PropertiesData,
     DimensionsData, VolumeData, CategoryEnum
 from parsers.runnures.schemas.product_flat import ProductFlat, flatten_product
 from parsers.runnures.schemas.stroydvor.categories import Category
+from parsers.runnures.utils.common import get_int_from_string, get_digits_from_string
 from parsers.runnures.utils.csv import CsvReader, CsvWriter
 from parsers.runnures.utils.pydantic import BaseModelCamelToSnake
 from parsers.runnures.utils.units import mass_unit_map, dimensions_unit_map, volume_unit_map, get_num_and_unit
@@ -108,15 +109,19 @@ def parse_product(api_product: SingleProductPageApiData) -> Product | None:
 
 
 def define_properties(soup, url) -> PropertiesData:
-    digit_regexp = re.compile(r'\d+')
     summary_block = soup.find('cx-page-slot', position='Summary')
     properties_block = soup.find('sd-product-attributes-view')
     properties_dict: dict[str, str] = {}
+    as_text = properties_block.text.strip()
     try:
         for property_ in properties_block.find_all('li'):
             property_tuple = tuple(property_.children)
             if len(property_tuple) == 2 and property_tuple[0] and property_tuple[1]:
                 properties_dict[property_tuple[0].text.strip()] = property_tuple[1].text.strip()
+
+        as_text_from_dict = ', '.join(map(lambda x: f'{x[0]}: {x[1]}', properties_dict.items()))
+        if as_text_from_dict:
+            as_text = as_text_from_dict
 
         mass_raw = properties_dict.get('Вес')
         mass = None
@@ -165,7 +170,7 @@ def define_properties(soup, url) -> PropertiesData:
             color = color.lower()
 
         art_codes = []
-        local_art = digit_regexp.search(summary_block.find('span', class_='code').text)[0]
+        local_art = get_digits_from_string(summary_block.find('span', class_='code').text)
         if local_art:
             art_codes.append(local_art)
         properties_art = properties_dict.get('Артикул')
@@ -178,7 +183,7 @@ def define_properties(soup, url) -> PropertiesData:
         category_list_raw = [item.text for item in soup.find('nav').find_all('a')[1:]][::-1]
 
         return PropertiesData(
-            as_text=properties_block.text.strip(),
+            as_text=as_text,
             as_dict=properties_dict if properties_dict else None,
             brand=properties_dict.get('Бренд'),
             label=properties_dict.get('Название') or properties_dict.get('Тип') or properties_dict.get('Модель'),

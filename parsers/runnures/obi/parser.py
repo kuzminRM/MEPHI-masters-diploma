@@ -233,6 +233,7 @@ def define_properties(soup, url) -> PropertiesData:
             as_dict=properties_dict if properties_dict else None,
         )
 
+
 if __name__ == '__main__':
     service_log()
     add_file_log()
