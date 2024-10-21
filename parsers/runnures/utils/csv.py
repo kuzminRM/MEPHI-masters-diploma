@@ -9,14 +9,14 @@ T = TypeVar('T', bound=BaseModel)
 
 
 class CsvWriter(Generic[T]):
-    def __init__(self, filename: str, header_model: type[T]):
+    def __init__(self, filename: str, header_model: type[T], path: str = r'./'):
         """
         Инициализация CsvWriter.
 
         :param filename: Имя файла, в который будут записываться данные.
         :param header_model: Pydantic модель, представляющая заголовки CSV.
         """
-        self.filename = get_file_name(filename)
+        self.filename = path + get_file_name(filename)
         self.header_model = header_model
 
         # Извлечение полей модели для создания заголовков
