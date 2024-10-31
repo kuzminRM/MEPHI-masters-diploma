@@ -1,0 +1,65 @@
+from sqlalchemy import BigInteger, Boolean, Column, Double, Identity, PrimaryKeyConstraint, String, Text
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import Mapped, declarative_base, mapped_column
+from sqlalchemy.orm.base import Mapped
+
+Base = declarative_base()
+
+
+class Product(Base):
+    __tablename__ = 'mapper_product'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='mapper_product_pkey'),
+    )
+
+    id = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1))
+    uid = mapped_column(String(200), nullable=False)
+    store = mapped_column(String(200), nullable=False)
+    title = mapped_column(String(200), nullable=False)
+    url = mapped_column(String(200), nullable=False)
+    category = mapped_column(String(200), nullable=False)
+    images = mapped_column(JSONB, nullable=False)
+    price = mapped_column(Double(53), nullable=False)
+    properties_as_text = mapped_column(Text, nullable=False)
+    properties_art_codes = mapped_column(JSONB, nullable=False)
+    properties_category_list_raw = mapped_column(JSONB, nullable=False)
+    description = mapped_column(Text)
+    images_0 = mapped_column(String(200))
+    images_1 = mapped_column(String(200))
+    images_2 = mapped_column(String(200))
+    images_3 = mapped_column(String(200))
+    images_4 = mapped_column(String(200))
+    images_5 = mapped_column(String(200))
+    properties_as_dict = mapped_column(JSONB)
+    properties_brand = mapped_column(String(200))
+    properties_label = mapped_column(String(200))
+    properties_country = mapped_column(String(200))
+    properties_color = mapped_column(String(200))
+    properties_material = mapped_column(String(200))
+    properties_mass_raw = mapped_column(String(200))
+    properties_mass_num = mapped_column(Double(53))
+    properties_mass_unit = mapped_column(String(200))
+    properties_volume_raw = mapped_column(String(200))
+    properties_volume_num = mapped_column(Double(53))
+    properties_volume_unit = mapped_column(String(200))
+    properties_dimensions_raw = mapped_column(String(200))
+    properties_dimensions_d_list = mapped_column(JSONB)
+    properties_dimensions_d_list_0 = mapped_column(Double(53))
+    properties_dimensions_d_list_1 = mapped_column(Double(53))
+    properties_dimensions_d_list_2 = mapped_column(Double(53))
+    properties_dimensions_d_list_3 = mapped_column(Double(53))
+    properties_dimensions_d_list_4 = mapped_column(Double(53))
+    properties_dimensions_d_list_5 = mapped_column(Double(53))
+    properties_dimensions_all_units_parsed = mapped_column(Boolean)
+    properties_art_codes_0 = mapped_column(String(200))
+    properties_art_codes_1 = mapped_column(String(200))
+    properties_art_codes_2 = mapped_column(String(200))
+    properties_art_codes_3 = mapped_column(String(200))
+    properties_art_codes_4 = mapped_column(String(200))
+    properties_art_codes_5 = mapped_column(String(200))
+    properties_category_list_raw_0 = mapped_column(String(200))
+    properties_category_list_raw_1 = mapped_column(String(200))
+    properties_category_list_raw_2 = mapped_column(String(200))
+    properties_category_list_raw_3 = mapped_column(String(200))
+    properties_category_list_raw_4 = mapped_column(String(200))
+    properties_category_list_raw_5 = mapped_column(String(200))
