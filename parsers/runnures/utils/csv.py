@@ -1,10 +1,14 @@
 import csv
+import logging
 from typing import TypeVar, Iterator, Generic
 
 from pydantic import BaseModel
+from pydantic_core import ValidationError
 
 from parsers.runnures.utils.file import get_file_name
 
+
+logger = logging.getLogger(__name__)
 T = TypeVar('T', bound=BaseModel)
 
 
@@ -58,7 +62,7 @@ class CsvWriter(Generic[T]):
 
 
 class CsvReader(Generic[T]):
-    def __init__(self, filename: str, model: type[T]):
+    def __init__(self, filename: str, model: type[T], none_on_error: bool = False, log_on_error: bool = True):
         """
         Инициализация CsvReader.
 
@@ -67,6 +71,8 @@ class CsvReader(Generic[T]):
         """
         self.filename = filename
         self.model = model
+        self.none_on_error = none_on_error
+        self.log_on_error = log_on_error
 
     def __iter__(self) -> Iterator[T]:
         """
@@ -80,4 +86,10 @@ class CsvReader(Generic[T]):
             # Проход по строкам файла и создание объектов модели
             for row in reader:
                 # Преобразование данных строки в объект Pydantic модели
-                yield self.model(**row)
+                try:
+                    yield self.model(**row)
+                except ValidationError as e:
+                    if self.log_on_error:
+                        logger.error(f"Ошибка валидации: {e} | {row}")
+                    if self.none_on_error:
+                        yield None

@@ -1,5 +1,8 @@
+import json
+import re
+from typing import Any
 from uuid import uuid4
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, root_validator
 
 from parsers.runnures.schemas.product import StoreEnum, CategoryEnum, Product
 
@@ -55,6 +58,57 @@ class ProductFlat(BaseModel):
     properties__category_list_raw__3: str | None = None
     properties__category_list_raw__4: str | None = None
     properties__category_list_raw__5: str | None = None
+
+    @field_validator('properties__category_list_raw', 'properties__art_codes', 'images', mode='before')
+    @classmethod
+    def to_list_str(cls, value: Any) -> list[str]:
+        if isinstance(value, str):
+            return json.loads(
+                value
+                .replace('"', "\\\"")
+                .replace("['", '["')
+                .replace("']", '"]')
+                .replace(", '", ', "')
+                .replace("',", '",')
+                .replace("\\xa0", ' ')
+            )
+        return value
+
+    @field_validator('properties__dimensions__d_list', mode='before')
+    @classmethod
+    def to_list_float(cls, value: Any) -> list[float]:
+        if isinstance(value, str):
+            return json.loads(value)
+        return value
+
+    @field_validator('properties__as_dict', mode='before')
+    @classmethod
+    def to_list_dict(cls, value: Any) -> dict:
+        if isinstance(value, str):
+            return json.loads(re.sub(
+                r'(\d),(\d)',
+                r'\1.\2',
+                value
+                .replace('"', "'")
+                .replace("{'", '{"')
+                .replace("'}", '"}')
+                .replace("', '", '", "')
+                .replace("': '", '": "')
+                .replace("\\xa0", ' ')
+            ))
+        return value
+
+    @field_validator('properties__as_text', mode='before')
+    @classmethod
+    def none_to_str(cls, value: Any) -> str:
+        if value is None:
+            return ''
+        return value
+
+    @root_validator(pre=True)
+    @classmethod
+    def convert_empty_strings(cls, values):
+        return {k: (None if v == "" else v) for k, v in values.items()}
 
 
 def flatten_product(product: Product) -> ProductFlat:
