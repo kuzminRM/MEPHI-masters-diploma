@@ -1,13 +1,15 @@
-from sqlalchemy import BigInteger, Boolean, Column, Double, Identity, PrimaryKeyConstraint, String, Text
+from typing import List, Optional
+
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, Double, ForeignKeyConstraint, Identity, Index, PrimaryKeyConstraint, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, declarative_base, mapped_column
+from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 from sqlalchemy.orm.base import Mapped
 
 Base = declarative_base()
 
 
 class Product(Base):
-    __tablename__ = 'mapper_product'
+    __tablename__ = 'django_mapper_product'
     __table_args__ = (
         PrimaryKeyConstraint('id', name='mapper_product_pkey'),
     )
@@ -63,3 +65,27 @@ class Product(Base):
     properties_category_list_raw_3 = mapped_column(String(200))
     properties_category_list_raw_4 = mapped_column(String(200))
     properties_category_list_raw_5 = mapped_column(String(200))
+
+    django_mapper_match: Mapped[List['Match']] = relationship('Match', uselist=True, foreign_keys='[Match.product_1_id]', back_populates='product_1')
+    django_mapper_match_: Mapped[List['Match']] = relationship('Match', uselist=True, foreign_keys='[Match.product_2_id]', back_populates='product_2')
+
+
+class Match(Base):
+    __tablename__ = 'django_mapper_match'
+    __table_args__ = (
+        ForeignKeyConstraint(['product_1_id'], ['django_mapper_product.id'], deferrable=True, initially='DEFERRED', name='django_mapper_match_product_1_id_ca3f4a54_fk_django_ma'),
+        ForeignKeyConstraint(['product_2_id'], ['django_mapper_product.id'], deferrable=True, initially='DEFERRED', name='django_mapper_match_product_2_id_51c9412b_fk_django_ma'),
+        PrimaryKeyConstraint('id', name='django_mapper_match_pkey'),
+        Index('django_mapper_match_product_1_id_ca3f4a54', 'product_1_id'),
+        Index('django_mapper_match_product_2_id_51c9412b', 'product_2_id')
+    )
+
+    id = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1))
+    insurance = mapped_column(Double(53), nullable=False)
+    updated_at = mapped_column(DateTime(True), nullable=False)
+    created_at = mapped_column(DateTime(True), nullable=False)
+    product_1_id = mapped_column(BigInteger, nullable=False)
+    product_2_id = mapped_column(BigInteger)
+
+    product_1: Mapped['Product'] = relationship('Product', foreign_keys=[product_1_id], back_populates='django_mapper_match')
+    product_2: Mapped[Optional['Product']] = relationship('Product', foreign_keys=[product_2_id], back_populates='django_mapper_match_')

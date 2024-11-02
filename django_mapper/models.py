@@ -52,3 +52,11 @@ class Product(models.Model):
     properties_category_list_raw_3 = models.CharField(max_length=200, default=None, null=True)
     properties_category_list_raw_4 = models.CharField(max_length=200, default=None, null=True)
     properties_category_list_raw_5 = models.CharField(max_length=200, default=None, null=True)
+
+
+class Match(models.Model):
+    product_1 = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_1')
+    product_2 = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_2', default=None, null=True)
+    insurance = models.FloatField(default=1.0)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)

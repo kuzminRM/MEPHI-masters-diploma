@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "mapper.apps.MapperConfig",
+    "django_mapper.apps.MapperConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

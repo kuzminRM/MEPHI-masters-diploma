@@ -20,5 +20,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("mapper/", include("mapper.urls")),
+    path("mapper/", include("django_mapper.urls", namespace="django_mapper")),
 ]
