@@ -111,6 +111,10 @@ class ProductFlat(BaseModel):
         return {k: (None if v == "" else v) for k, v in values.items()}
 
 
+class ProductFlatId(ProductFlat):
+    id: int
+
+
 def flatten_product(product: Product) -> ProductFlat:
     # Инициализируем словарь для хранения данных в плоском формате
     flat_data = {

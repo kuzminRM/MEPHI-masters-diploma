@@ -27,7 +27,6 @@ def product_view(request, product_id):
 
     return render(request, "django_mapper/mapper.html", {
         "main_product_obj": main_product_obj,
-        'match_product_objs': match_product_objs,
         'progress': progress,
         'suggestions': suggestions,
     })

@@ -6,6 +6,5 @@ __pycache__/
 *.drawio.svg.dtmp
 *.log
 *.csv
-*.html
 *.json
 data/

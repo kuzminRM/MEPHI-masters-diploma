@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map</title>
+  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.2.0/dist/css/coreui.min.css" rel="stylesheet" integrity="sha384-u3h5SFn5baVOWbh8UkOrAaLXttgSF0vXI15ODtCSxl0v/VKivnCN6iHCcvlyTL7L" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.2.0/dist/js/coreui.bundle.min.js" integrity="sha384-JdRP5GRWP6APhoVS1OM/pOKMWe7q9q8hpl+J2nhCfVJKoS+yzGtELC5REIYKrymn" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="header p-0 mb-4">
+    <div class="container-fluid px-4">
+      <ul class="header-nav ms-auto mt-3">
+        <li class="nav-item pt-2 mx-2">
+          <a href="{% url 'django_mapper:map_products' main_product_obj.id 1234567890 %}" class="btn btn-info">No match</a>
+        </li>
+        <li class="nav-item mx-2" style="width: 300px;">
+          <div class="progress-group">
+            <div class="progress-group-header">
+              <div>Progress</div>
+              <div class="ms-auto font-weight-bold">{{ progress.matched }} / {{ progress.nomatches }} / {{ progress.unmatched }}</div>
+            </div>
+            <div class="progress-group-bars">
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress.matched_percent }}%" aria-valuenow="{{ progress.matched_percent }}" aria-valuemin="0" aria-valuemax="100">{{ progress.matched_percent }}%</div>
+                <div class="progress-bar bg-info" role="progressbar" style="width: {{ progress.nomatches_percent }}%" aria-valuenow="{{ progress.nomatches_percent }}" aria-valuemin="0" aria-valuemax="100">{{ progress.nomatches_percent }}%</div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ progress.unmatched_percent }}%" aria-valuenow="{{ progress.unmatched_percent }}" aria-valuemin="0" aria-valuemax="100">{{ progress.unmatched_percent }}%</div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </header>
+  <div class="body flex-grow-1">
+    <div class="container px-4">
+      <div class="row">
+        <div class="col-4" style="height: 85vh; overflow-y: auto; box-sizing: border-box;">
+          <div class="card my-4">
+            <div class="container p-4">
+              <div id="carousel_main" class="carousel slide">
+                <div class="carousel-indicators">
+                  {% for main_product_obj_img in main_product_obj.images %}
+                  <button type="button" data-coreui-target="#carousel_main" data-coreui-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}" style="background-color: black;"></button>
+                  {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                  {% for main_product_obj_img in main_product_obj.images %}
+                  <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ main_product_obj_img }}" class="d-block mx-auto" alt="..." style="height: 20rem;">
+                  </div>
+                  {% empty %}
+                    <div class="carousel-item active">
+                      <img src="https://ele.bg/assets/products/default-picture-99de6c6621f786783d98e85098d62bdeb31ba016ce349ab7cbb2f8fff00ad9b5.jpg" class="d-block mx-auto" alt="No image available"  style="height: 20rem;">
+                    </div>
+                  {% endfor %}
+                </div>
+                <button class="carousel-control-prev bg-light" type="button" data-coreui-target="#carousel_main" data-coreui-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next bg-light" type="button" data-coreui-target="#carousel_main" data-coreui-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ main_product_obj.title }}</h5>
+              <p class="card-text"><b>{{ main_product_obj.price }} ₽</b></p>
+              <p class="card-text" style="height: 10rem; overflow-y: auto;">{{ main_product_obj.description }}</p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Property</th>
+                    <th scope="col">Value</th>
+                  </tr>
+                </thead>
+                  <tbody>
+                    <tr>
+                      <td>Brand</td>
+                      <td>{{ main_product_obj.properties_brand }}</td>
+                    </tr>
+                    <tr>
+                      <td>Label</td>
+                      <td>{{ main_product_obj.properties_label }}</td>
+                    </tr>
+                    <tr>
+                      <td>Country</td>
+                      <td>{{ main_product_obj.properties_country }}</td>
+                    </tr>
+                    <tr>
+                      <td>Color</td>
+                      <td>{{ main_product_obj.properties_color }}</td>
+                    </tr>
+                    <tr>
+                      <td>Material</td>
+                      <td>{{ main_product_obj.properties_material }}</td>
+                    </tr>
+                    <tr>
+                      <td>Mass</td>
+                      <td>{{ main_product_obj.properties_mass_num }} {{ main_product_obj.properties_mass_unit }}</td>
+                    </tr>
+                    <tr>
+                      <td>Volume</td>
+                      <td>{{ main_product_obj.properties_volume_num }} {{ main_product_obj.properties_volume_unit }}</td>
+                    </tr>
+                    <tr>
+                      <td>Dimensions</td>
+                      <td>
+                        {% if main_product_obj.properties_dimensions_d_list %}
+                          {{ main_product_obj.properties_dimensions_d_list|join:", " }} {{ main_product_obj.properties_dimensions_all_units_parsed|yesno:" (parsed), " }}
+                        {% else %}
+                          {{ main_product_obj.properties_dimensions_raw }}
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Art Codes</td>
+                      <td>{{ main_product_obj.properties_art_codes|join:", " }}</td>
+                    </tr>
+                    <tr>
+                      <td>Categories</td>
+                      <td>{{ main_product_obj.properties_category_list_raw|join:", " }}</td>
+                    </tr>
+                  </tbody>
+              </table>
+              <p class="card-text">
+                <button class="btn btn-light" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapse_pk{{ main_product_obj.id }}" aria-expanded="false" aria-controls="collapse_pk{{ main_product_obj.id }}">
+                  Full property list
+                </button>
+                <div class="collapse" id="collapse_pk{{ main_product_obj.id }}">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Property</th>
+                        <th scope="col">Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for k, v in main_product_obj.properties_as_dict.items %}
+                        <tr>
+                          <td>{{ k }}</td>
+                          <td>{{ v }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </p>
+              <a href="{{ main_product_obj.url }}" target="_blank" class="btn btn-secondary">Go to store</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-8" style="height: 85vh; overflow-y: auto; box-sizing: border-box;">
+          {% for match_product_obj in suggestions.suggestions %}
+          <div class="row">
+            <div class="col-8">
+              <div class="card my-4">
+                <div class="container p-4">
+                  <div id="carousel_match_pk{{ match_product_obj.product_obj.id }}" class="carousel slide">
+                    <div class="carousel-indicators">
+                      {% for main_product_obj_img in match_product_obj.product_obj.images %}
+                      <button type="button" data-coreui-target="#carousel_match_pk{{ match_product_obj.product_obj.id }}" data-coreui-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}" style="background-color: black;"></button>
+                      {% endfor %}
+                    </div>
+                    <div class="carousel-inner">
+                      {% for main_product_obj_img in match_product_obj.product_obj.images %}
+                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ main_product_obj_img }}" class="d-block mx-auto" alt="..." style="height: 20rem;">
+                      </div>
+                      {% empty %}
+                        <div class="carousel-item active">
+                          <img src="https://ele.bg/assets/products/default-picture-99de6c6621f786783d98e85098d62bdeb31ba016ce349ab7cbb2f8fff00ad9b5.jpg" class="d-block mx-auto" alt="No image available"  style="height: 20rem;">
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev bg-light" type="button" data-coreui-target="#carousel_match_pk{{ match_product_obj.product_obj.id }}" data-coreui-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next bg-light" type="button" data-coreui-target="#carousel_match_pk{{ match_product_obj.product_obj.id }}" data-coreui-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">{{ match_product_obj.product_obj.title }}</h5>
+                  <p class="card-text"><b>{{ match_product_obj.product_obj.price }} ₽</b></p>
+                  <p class="card-text" style="height: 10rem; overflow-y: auto;">{{ match_product_obj.product_obj.description }}</p>
+                  <p class="card-text">
+                    <button class="btn btn-light" type="button" data-coreui-toggle="collapse" data-coreui-target="#collapse_match_pk{{ match_product_obj.product_obj.id }}" aria-expanded="false" aria-controls="collapse_match_pk{{ match_product_obj.product_obj.id }}">
+                      Full property list
+                    </button>
+                    <div class="collapse" id="collapse_match_pk{{ match_product_obj.product_obj.id }}">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Property</th>
+                            <th scope="col">Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for k, v in match_product_obj.product_obj.properties__as_dict.items %}
+                            <tr>
+                              <td>{{ k }}</td>
+                              <td>{{ v }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </p>
+                  <a href="{% url 'django_mapper:map_products' main_product_obj.id match_product_obj.product_obj.id %}" class="btn btn-primary">Map</a>
+                  <a href="{{ match_product_obj.product_obj.url }}" target="_blank" class="btn btn-secondary">Go to store</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card my-4">
+                <div class="progress-group m-2">
+                  <div class="progress-group-header">
+                    <i class="cil-user progress-group-icon me-2"></i>
+                    <div>rubert_tiny_turbo</div>
+                    <div class="ms-auto font-weight-bold">{{ match_product_obj.rank_rubert_tiny_turbo }}</div>
+                  </div>
+                  <div class="progress-group-bars">
+                    <div class="progress">
+                      <div class="progress-bar bg-{% if match_product_obj.rank_rubert_tiny_turbo <= 2 %}success{% elif match_product_obj.rank_rubert_tiny_turbo <= 5 %}warning{% else %}danger{% endif %}"
+                           role="progressbar" style="width: {{ match_product_obj.score_rubert_tiny_turbo }}%"
+                           aria-valuenow="{{ match_product_obj.score_rubert_tiny_turbo }}"
+                           aria-valuemin="0" aria-valuemax="100">
+                        {{ match_product_obj.score_rubert_tiny_turbo }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress-group m-2">
+                  <div class="progress-group-header">
+                    <i class="cil-user progress-group-icon me-2"></i>
+                    <div>rubert_tiny2</div>
+                    <div class="ms-auto font-weight-bold">{{ match_product_obj.rank_rubert_tiny2 }}</div>
+                  </div>
+                  <div class="progress-group-bars">
+                    <div class="progress">
+                      <div class="progress-bar bg-{% if match_product_obj.rank_rubert_tiny2 <= 2 %}success{% elif match_product_obj.rank_rubert_tiny2 <= 5 %}warning{% else %}danger{% endif %}"
+                           role="progressbar" style="width: {{ match_product_obj.score_rubert_tiny2 }}%"
+                           aria-valuenow="{{ match_product_obj.score_rubert_tiny2 }}"
+                           aria-valuemin="0" aria-valuemax="100">
+                        {{ match_product_obj.score_rubert_tiny2 }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress-group m-2">
+                  <div class="progress-group-header">
+                    <i class="cil-user progress-group-icon me-2"></i>
+                    <div>labse_ru_turbo</div>
+                    <div class="ms-auto font-weight-bold">{{ match_product_obj.rank_labse_ru_turbo }}</div>
+                  </div>
+                  <div class="progress-group-bars">
+                    <div class="progress">
+                      <div class="progress-bar bg-{% if match_product_obj.rank_labse_ru_turbo <= 2 %}success{% elif match_product_obj.rank_labse_ru_turbo <= 5 %}warning{% else %}danger{% endif %}"
+                           role="progressbar" style="width: {{ match_product_obj.score_labse_ru_turbo }}%"
+                           aria-valuenow="{{ match_product_obj.score_labse_ru_turbo }}"
+                           aria-valuemin="0" aria-valuemax="100">
+                        {{ match_product_obj.score_labse_ru_turbo }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="progress-group m-2">
+                  <div class="progress-group-header">
+                    <i class="cil-user progress-group-icon me-2"></i>
+                    <div>multilingual_e5</div>
+                    <div class="ms-auto font-weight-bold">{{ match_product_obj.rank_multilingual_e5 }}</div>
+                  </div>
+                  <div class="progress-group-bars">
+                    <div class="progress">
+                      <div class="progress-bar bg-{% if match_product_obj.rank_multilingual_e5 <= 2 %}success{% elif match_product_obj.rank_multilingual_e5 <= 5 %}warning{% else %}danger{% endif %}"
+                           role="progressbar" style="width: {{ match_product_obj.score_multilingual_e5 }}%"
+                           aria-valuenow="{{ match_product_obj.score_multilingual_e5 }}"
+                           aria-valuemin="0" aria-valuemax="100">
+                        {{ match_product_obj.score_multilingual_e5 }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Property</th>
+                      <th scope="col">Value</th>
+                    </tr>
+                  </thead>
+                    <tbody>
+                      <tr>
+                        <td>Brand</td>
+                        <td>{{ match_product_obj.product_obj.properties__brand }}</td>
+                      </tr>
+                      <tr>
+                        <td>Label</td>
+                        <td>{{ match_product_obj.product_obj.properties__label }}</td>
+                      </tr>
+                      <tr>
+                        <td>Country</td>
+                        <td>{{ match_product_obj.product_obj.properties__country }}</td>
+                      </tr>
+                      <tr>
+                        <td>Color</td>
+                        <td>{{ match_product_obj.product_obj.properties__color }}</td>
+                      </tr>
+                      <tr>
+                        <td>Material</td>
+                        <td>{{ match_product_obj.product_obj.properties__material }}</td>
+                      </tr>
+                      <tr>
+                        <td>Mass</td>
+                        <td>{{ match_product_obj.product_obj.properties__mass__num }} {{ match_product_obj.product_obj.properties__mass__unit }}</td>
+                      </tr>
+                      <tr>
+                        <td>Volume</td>
+                        <td>{{ match_product_obj.product_obj.properties__volume__num }} {{ match_product_obj.product_obj.properties__volume__unit }}</td>
+                      </tr>
+                      <tr>
+                        <td>Dimensions</td>
+                        <td>
+                          {% if match_product_obj.product_obj.properties__dimensions__d_list %}
+                            {{ match_product_obj.product_obj.properties__dimensions__d_list|join:", " }} {{ match_product_obj.product_obj.properties__dimensions__all_units_parsed|yesno:" (parsed), " }}
+                          {% else %}
+                            {{ match_product_obj.product_obj.properties__dimensions_raw }}
+                          {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Art Codes</td>
+                        <td>{{ match_product_obj.product_obj.properties__art_codes|join:", " }}</td>
+                      </tr>
+                      <tr>
+                        <td>Categories</td>
+                        <td>{{ match_product_obj.product_obj.properties__category_list_raw|join:", " }}</td>
+                      </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

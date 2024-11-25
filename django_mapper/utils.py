@@ -34,3 +34,21 @@ def query_benchmark(show_sql=False):
         return wrapper
 
     return pseudo_decorator
+
+
+def generate_key_mapping(model) -> dict[str, str]:
+    key_mapping = {}
+    for field in model.__fields__:
+        # Replace '__' with '_' for each field name
+        mapped_key = field.replace('__', '_')
+        key_mapping[mapped_key] = field
+    return key_mapping
+
+
+# Function to map keys using the auto-generated key mapping
+def map_keys_for_product_flat(data: dict, model) -> dict:
+    key_mapping = generate_key_mapping(model)
+    return {
+        key_mapping.get(k, k): v  # Use mapped key if it exists; otherwise, use original
+        for k, v in data.items()
+    }
