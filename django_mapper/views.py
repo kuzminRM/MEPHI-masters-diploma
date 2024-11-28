@@ -1,5 +1,3 @@
-from typing import Final
-
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -9,8 +7,6 @@ from django_mapper.models import Product, Match
 from django_mapper.schemas.mapper_progress import MatchingProgress
 from django_mapper.schemas.product_suggestions import ProductSuggestions
 from django_mapper.service import get_next_product
-from parsers.runnures.schemas.product import StoreEnum
-
 
 
 def index(request):
@@ -21,7 +17,6 @@ def index(request):
 
 def product_view(request, product_id):
     main_product_obj = Product.objects.get(pk=product_id)
-    match_product_objs = Product.objects.filter(pk__in=list(range(product_id+1, product_id + 10)))
     progress = MatchingProgress.get_progress()
     suggestions = ProductSuggestions.get_suggestions(main_product_obj)
 

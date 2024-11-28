@@ -30,4 +30,4 @@ class Settings(BaseSettings):
         return f'http://{self.QUADRANT_HOST}:{self.QUADRANT_PORT}'
 
 
-settings = Settings(_env_file='.env')  # type: ignore[call-arg]
+settings = Settings(_env_file='/home/roman/PycharmProjects/personal/diploma/.env')  # type: ignore[call-arg]

@@ -60,3 +60,13 @@ class Match(models.Model):
     insurance = models.FloatField(default=1.0)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class MatchLLM(models.Model):
+    product_1 = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_1_llm')
+    product_2 = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_2_llm', default=None, null=True)
+    llm_map = models.BooleanField(null=True)
+    llm_insurance = models.IntegerField(null=True)
+    llm_raw = models.CharField(max_length=20, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)

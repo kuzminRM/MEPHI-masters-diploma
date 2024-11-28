@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from django.forms import model_to_dict
 from pydantic import BaseModel, Field
 from qdrant_client.http.models import Record, ScoredPoint
@@ -7,10 +9,11 @@ from qdrant_client import models
 
 from db_populate.quadrant_client import client
 from django_mapper.constants import CURRENT_RIGHT_STORE
-from django_mapper.models import Product, Match
 from django_mapper.utils import map_keys_for_product_flat
-from parsers.runnures.schemas.product import StoreEnum
 from parsers.runnures.schemas.product_flat import ProductFlat, ProductFlatId
+
+if TYPE_CHECKING:
+    from django_mapper.models import Product
 
 
 class ProductSuggestion(BaseModel):
@@ -32,6 +35,7 @@ def create_product_suggestion_list(
         hits_labse_ru_turbo: list[ScoredPoint] = None,
         hits_multilingual_e5: list[ScoredPoint] = None,
 ) -> list[ProductSuggestion]:
+    from django_mapper.models import Product
     # Initialize dictionaries for scores and ranks across models
     uid_suggestion_score_map = {}
     uid_suggestion_rank_map = {}
@@ -93,7 +97,7 @@ def create_product_suggestion_list(
     return result
 
 
-def query_product_suggestions(uid: str, collection_name: str) -> list[ScoredPoint]:
+def query_product_suggestions(uid: str, collection_name: str, limit: int = 10) -> list[ScoredPoint]:
     vector_data_list_tiny_turbo = client.retrieve(
         collection_name=collection_name,
         ids=[uid],
@@ -108,7 +112,7 @@ def query_product_suggestions(uid: str, collection_name: str) -> list[ScoredPoin
         query_filter=models.Filter(
             must=[models.FieldCondition(key="store", match=models.MatchValue(value=CURRENT_RIGHT_STORE))]
         ),
-        limit=10,
+        limit=limit,
     ).points
     return hits
 

@@ -68,6 +68,8 @@ class Product(Base):
 
     django_mapper_match: Mapped[List['Match']] = relationship('Match', uselist=True, foreign_keys='[Match.product_1_id]', back_populates='product_1')
     django_mapper_match_: Mapped[List['Match']] = relationship('Match', uselist=True, foreign_keys='[Match.product_2_id]', back_populates='product_2')
+    django_mapper_match_llm: Mapped[List['Match']] = relationship('MatchLLM', uselist=True, foreign_keys='[MatchLLM.product_1_id]', back_populates='product_1')
+    django_mapper_match_llm_: Mapped[List['Match']] = relationship('MatchLLM', uselist=True, foreign_keys='[MatchLLM.product_2_id]', back_populates='product_2')
 
 
 class Match(Base):
@@ -89,3 +91,26 @@ class Match(Base):
 
     product_1: Mapped['Product'] = relationship('Product', foreign_keys=[product_1_id], back_populates='django_mapper_match')
     product_2: Mapped[Optional['Product']] = relationship('Product', foreign_keys=[product_2_id], back_populates='django_mapper_match_')
+
+
+class MatchLLM(Base):
+    __tablename__ = 'django_mapper_matchllm'
+    __table_args__ = (
+        ForeignKeyConstraint(['product_1_id'], ['django_mapper_product.id'], deferrable=True, initially='DEFERRED', name='django_mapper_match_product_1_id_ca3f4a54_fk_django_ma'),
+        ForeignKeyConstraint(['product_2_id'], ['django_mapper_product.id'], deferrable=True, initially='DEFERRED', name='django_mapper_match_product_2_id_51c9412b_fk_django_ma'),
+        PrimaryKeyConstraint('id', name='django_mapper_match_pkey'),
+        Index('django_mapper_match_product_1_id_ca3f4a54', 'product_1_id'),
+        Index('django_mapper_match_product_2_id_51c9412b', 'product_2_id')
+    )
+
+    id = mapped_column(BigInteger, Identity(start=1, increment=1, minvalue=1, maxvalue=9223372036854775807, cycle=False, cache=1))
+    llm_map = mapped_column(Boolean, nullable=True)
+    llm_insurance = mapped_column(BigInteger, nullable=True)
+    llm_raw = mapped_column(String(20), nullable=True)
+    updated_at = mapped_column(DateTime(True), nullable=False)
+    created_at = mapped_column(DateTime(True), nullable=False)
+    product_1_id = mapped_column(BigInteger, nullable=False)
+    product_2_id = mapped_column(BigInteger)
+
+    product_1: Mapped['Product'] = relationship('Product', foreign_keys=[product_1_id], back_populates='django_mapper_match_llm')
+    product_2: Mapped[Optional['Product']] = relationship('Product', foreign_keys=[product_2_id], back_populates='django_mapper_match_llm_')
