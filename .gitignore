@@ -8,3 +8,5 @@ __pycache__/
 *.csv
 *.json
 data/
+.virtual_documents/
+.ipynb_checkpoints/
