@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}аИССТ: Сопоставление{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="">Главная</a>
+  </li>
+  <li class="breadcrumb-item active"><span>Сопоставление</span>
+  </li>
+{% endblock %}
+
+{% block content %}
+  <h1><i class="fa-solid fa-code-compare"></i> Сопоставление</h1>
+  <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Запустить сопоставление</button>
+  <hr>
+  <table id="mapping_tasks_competed_table"
+         data-buttons="buttons"
+  >
+  </table>
+{% endblock %}
+
+
+{% block scripts %}
+  <script>
+
+    window.buttons = () => ({
+      btnUsersAdd: {
+        text: 'Refresh',
+        icon: 'fa-solid fa-arrows-rotate',
+        event() {
+          alert('Do some stuff to e.g. search all users which has logged in the last week')
+        },
+        attributes: {
+          title: 'Search all users which has logged in the last week'
+        }
+      },
+      btnAdd: {
+        text: 'Add new row',
+        icon: 'fa-solid fa-plus',
+        event() {
+          alert('Do some stuff to e.g. add a new row')
+        },
+        attributes: {
+          title: 'Add a new row to the table'
+        }
+      }
+    })
+
+    const $mapping_tasks_competed_table = $('#mapping_tasks_competed_table')
+
+    $mapping_tasks_competed_table.bootstrapTable({
+      url: '{% url 'django_ui:mapping_tasks_competed_table_json' %}',
+      pagination: true,
+      pageSize: 5,
+      search: true,
+      show_refresh: true,
+      columns: [
+        {
+          field: 'id',
+          title: 'ID',
+        },
+        {
+          field: 'source',
+          title: 'Источник',
+        },
+        {
+          field: 'state',
+          title: 'Прогресс',
+          formatter: function (value) {
+            let color;
+            switch (value) {
+              case 'Выполняется':
+                color = 'info';
+                break;
+              case 'Завершена':
+                color = 'success';
+                break;
+              default:
+                color = 'secondary';
+            }
+            return `<span class="badge bg-${color}">${value}</span>`;
+          }
+        },
+        {
+          field: 'status',
+          title: 'Результат',
+
+          formatter: function (value) {
+            let color;
+            switch (value) {
+              case 'Успешно':
+                color = 'success';
+                break;
+              case 'Ошибка':
+                color = 'danger';
+                break;
+              default:
+                color = 'secondary';
+            }
+            return `<span class="badge bg-${color}">${value}</span>`;
+          }
+        },
+        {
+          field: 'duration',
+          title: 'Длительность',
+        },
+        {
+          field: 'hadmatch',
+          title: 'Требуют<br>ручной разметки',
+        },
+        {
+          field: 'timestamp',
+          title: 'Время запуска',
+        },
+        {
+          field: 'actions',
+          title: 'Детали',
+          align: 'center',
+          formatter: function (_, row) {
+            return `
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button class="btn btn-primary btn-sm" href="#" target="_blank" title="Просмотр">
+    <i class="fa-solid fa-eye"></i>
+  </button>
+  <button class="btn btn-primary btn-sm" href="#" target="_blank" title="Просмотр" ${row.hadmatch === "0" || row.hadmatch === "-" ? "disabled" : ""}>
+    <i class="fa-solid fa-hands"></i>
+  </button>
+</div>
+`;
+          }
+        },
+      ]
+    })
+  </script>
+{% endblock %}

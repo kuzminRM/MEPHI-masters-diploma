@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}аИССТ: Данные{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="">Главная</a>
+  </li>
+  <li class="breadcrumb-item active"><span>Данные</span>
+  </li>
+{% endblock %}
+
+{% block content %}
+  <h1><i class="fa-solid fa-database nav-icon"></i> Данные</h1>
+  <hr>
+  <table id="parsing_tasks_competed_table"
+         data-buttons="buttons"
+  >
+  </table>
+  <hr>
+  <h2 class="mb-5">Источники данных</h2>
+  <div class="d-flex flex-row">
+
+    <div class="col-3">
+      <div class="card m-2">
+        <img src="{% static 'sdv_logo.svg' %}" class="card-img-top p-2" alt="..." height="80px" style="width: fit-content;align-self: center;">
+        <div class="card-body">
+          <h5 class="card-title">Строительный двор</h5>
+          <p>
+            Последний успешный запуск:<br>
+            2025-03-17 20:15:02<br>
+            Кол-во данных: 14103<br>
+            Ошибок: 0
+          </p>
+          <div class="btn-group" role="group">
+            <a href="#" class="btn btn-primary"><i class="fa-solid fa-eye"></i> Просмотр</a>
+            <a href="#" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Запуск</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="card m-2">
+        <img src="{% static 'obi_logo.png' %}" class="card-img-top p-2" alt="..."  height="80px" style="width: fit-content;align-self: center;">
+        <div class="card-body">
+          <h5 class="card-title">OBI</h5>
+          <p>
+            Последний успешный запуск:<br>
+            2025-03-17 20:15:58<br>
+            Кол-во данных: 45571<br>
+            Ошибок: 154
+          </p>
+          <div class="btn-group" role="group">
+            <a href="#" class="btn btn-primary"><i class="fa-solid fa-eye"></i> Просмотр</a>
+            <a href="#" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Запуск</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="card m-2">
+        <img src="{% static 'petr_logo.png' %}" class="card-img-top p-2" alt="..."  height="80px" style="width: fit-content;align-self: center;">
+        <div class="card-body">
+          <h5 class="card-title">Петрович</h5>
+          <p>
+            Последний успешный запуск:<br>
+            -<br>
+            Кол-во данных: -<br>
+            Ошибок: -
+          </p>
+          <div class="btn-group" role="group">
+            <a href="#" class="btn btn-primary"><i class="fa-solid fa-eye"></i> Просмотр</a>
+            <a href="#" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Запуск</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
+
+
+{% block scripts %}
+  <script>
+
+    window.buttons = () => ({
+      btnUsersAdd: {
+        text: 'Refresh',
+        icon: 'fa-solid fa-arrows-rotate',
+        event() {
+          alert('Do some stuff to e.g. search all users which has logged in the last week')
+        },
+        attributes: {
+          title: 'Search all users which has logged in the last week'
+        }
+      },
+      btnAdd: {
+        text: 'Add new row',
+        icon: 'fa-solid fa-plus',
+        event() {
+          alert('Do some stuff to e.g. add a new row')
+        },
+        attributes: {
+          title: 'Add a new row to the table'
+        }
+      }
+    })
+
+    const $parsing_tasks_competed_table = $('#parsing_tasks_competed_table')
+
+    $parsing_tasks_competed_table.bootstrapTable({
+      url: '{% url 'django_ui:parsing_tasks_competed_table_json' %}',
+      pagination: true,
+      search: true,
+      show_refresh: true,
+      columns: [
+        {
+          field: 'id',
+          title: 'ID',
+        },
+        {
+          field: 'source',
+          title: 'Источник',
+        },
+        {
+          field: 'state',
+          title: 'Прогресс',
+          formatter: function (value) {
+            let color;
+            switch (value) {
+              case 'Выполняется':
+                color = 'info';
+                break;
+              case 'Завершена':
+                color = 'success';
+                break;
+              default:
+                color = 'secondary';
+            }
+            return `<span class="badge bg-${color}">${value}</span>`;
+          }
+        },
+        {
+          field: 'status',
+          title: 'Результат',
+
+          formatter: function (value) {
+            let color;
+            switch (value) {
+              case 'Успешно':
+                color = 'success';
+                break;
+              case 'Ошибка':
+                color = 'danger';
+                break;
+              default:
+                color = 'secondary';
+            }
+            return `<span class="badge bg-${color}">${value}</span>`;
+          }
+        },
+        {
+          field: 'count',
+          title: 'Получено товаров',
+        },
+        {
+          field: 'timestamp',
+          title: 'Время запуска',
+        },
+        {
+          field: 'actions',
+          title: 'Детали',
+          align: 'center',
+          formatter: function (_, row) {
+            return `
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button class="btn btn-primary btn-sm" href="#" target="_blank" title="Просмотр">
+    <i class="fa-solid fa-eye"></i>
+  </button>
+  <button class="btn btn-primary btn-sm" href="#" target="_blank" title="Просмотр" ${row.status === "Успешно" ? "" : "disabled"}>
+    <i class="fa-solid fa-code-compare"></i>
+  </button>
+</div>
+`;
+          }
+        },
+      ]
+    })
+  </script>
+{% endblock %}

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['proper-hopefully-marten.ngrok-free.app', '127.0.0.1', 'localho
 
 INSTALLED_APPS = [
     "django_mapper.apps.MapperConfig",
+    "django_ui.apps.DjangoUiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
