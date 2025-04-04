@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="icon" type="image/x-icon" href="{% static 'logo2.png' %}">
   <title>{% block title %}Title{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/css/coreui.min.css" rel="stylesheet"
         integrity="sha384-PDUiPu3vDllMfrUHnurV430Qg8chPZTNhY8RUpq89lq22R3PzypXQifBpcpE1eoB" crossorigin="anonymous">
@@ -55,7 +56,7 @@
     <div class="container-fluid border-bottom px-4">
 
       <ul class="header-nav d-none d-lg-flex">
-        <li class="nav-item" style="margin-right: 25px;"><a class="header-brand" href="{% url 'django_ui:report_page' %}"><img src="{% static 'logo.png' %}" alt="logo" width="50"></a></li>
+        <li class="nav-item" style="margin-right: 25px;"><a class="header-brand" href="{% url 'django_ui:report_page' %}"><img src="{% static 'logo2.png' %}" alt="logo" width="50"></a></li>
         <li class="nav-item" style="margin-top: 5px;"><a class="nav-link" href="{% url 'django_ui:data_page' %}"><i class="fa-solid fa-database nav-icon"></i>&nbsp; Данные</a></li>
         <li class="nav-item" style="margin-top: 5px;"><a class="nav-link" href="{% url 'django_ui:mapping_page' %}"><i class="fa-solid fa-code-compare"></i>&nbsp; Сопоставление</a></li>
         <li class="nav-item" style="margin-top: 5px;"><a class="nav-link" href="{% url 'django_ui:report_page' %}"><i class="fa-solid fa-chart-simple"></i>&nbsp; Отчеты</a></li>
@@ -96,7 +97,7 @@
   </div>
   <footer class="footer px-4">
     <div>
-      Информационная система сопоставления товаров интернет-магазинов © 2025
+      асинхронная Информационная Система Сопоставления Товаров (аИССТ) © 2025
     </div>
     <div class="ms-auto">Разработано: &nbsp;<a href="">Кузьмин Р.М.</a></div>
   </footer>

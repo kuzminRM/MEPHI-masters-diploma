@@ -18,6 +18,10 @@
          data-buttons="buttons"
   >
   </table>
+  <hr>
+  {% autoescape off %}
+    {{ html_plot }}
+  {% endautoescape %}
 {% endblock %}
 
 
