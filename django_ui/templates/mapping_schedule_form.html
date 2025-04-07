@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}аИССТ: Запланировать сопоставление{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="">Главная</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'django_ui:mapping_page' %}">Сопоставление</a></li>
+  <li class="breadcrumb-item active"><span>Запланировать сопоставление</span></li>
+{% endblock %}
+
+
+{% block content %}
+  <h1><i class="fa-solid fa-clock"></i> Запланировать сопоставление</h1>
+  <hr>
+  <div class="col-6">
+    <form class="row g-3">
+      <div class="mb-3">
+        <label for="main_source" class="form-label">Целевой источник данных:</label>
+        <select id="main_source" name="main_source" class="form-select">
+          <option>Строительный двор (новые данные)</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="other_sources" class="form-label">Сопоставляемые источники данных:</label>
+        <select id="other_sources" name="main_source" class="form-control" multiple>
+          <option selected>OBI (новые данные)</option>
+          <option selected>Петрович (новые данные)</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="cron" class="form-label">Расписание в формате CRON:</label>
+        <input class="form-control" type="text" id="cron" name="cron" aria-describedby="cronHelp" value="0 0 * * 1,3,5">
+        <div id="cronHelp" class="form-text">Minute(0–59) Hour(0–23) DayOfMonth(1–31) Month(1–12) DayOfWeek(1–7)</div>
+      </div>
+      <div class="mb-3">
+        <button class="btn btn-primary">Запланировать</button>
+      </div>
+    </form>
+  </div>
+  <hr>
+  <table id="mapping_scheduled_table"
+         data-buttons="buttons"
+  >
+  </table>
+{% endblock %}
+
+
+{% block scripts %}
+  <script>
+
+    $(document).ready(function () {
+      $('#other_sources').select2();
+    });
+
+    window.buttons = () => ({
+      btnUsersAdd: {
+        text: 'Refresh',
+        icon: 'fa-solid fa-arrows-rotate',
+        event() {
+          alert('Do some stuff to e.g. search all users which has logged in the last week')
+        },
+        attributes: {
+          title: 'Search all users which has logged in the last week'
+        }
+      },
+      btnAdd: {
+        text: 'Add new row',
+        icon: 'fa-solid fa-plus',
+        event() {
+          alert('Do some stuff to e.g. add a new row')
+        },
+        attributes: {
+          title: 'Add a new row to the table'
+        }
+      }
+    })
+
+    const mapping_scheduled_table = $('#mapping_scheduled_table')
+
+    mapping_scheduled_table.bootstrapTable({
+      url: '{% url 'django_ui:mapping_scheduled_tasks_table_json' %}',
+      pagination: true,
+      pageSize: 5,
+      search: true,
+      show_refresh: true,
+      columns: [
+        {
+          field: 'id',
+          title: 'ID',
+        },
+        {
+          field: 'main_source',
+          title: 'Целевой источник',
+        },
+        {
+          field: 'other_sources',
+          title: 'Сопоставляемые источники',
+        },
+        {
+          field: 'cron',
+          title: 'CRON',
+        },
+        {
+          field: 'initiator',
+          title: 'Инициатор',
+        },
+        {
+          field: 'actions',
+          title: 'Детали',
+          align: 'center',
+          formatter: function (_, row) {
+            return `
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button class="btn btn-primary btn-sm" href="#" target="_blank" title="Просмотр">
+    <i class="fa-solid fa-pause"></i>
+  </button>
+  <button class="btn btn-primary btn-sm" href="#" target="_blank" title="Просмотр">
+    <i class="fa-solid fa-trash"></i>
+  </button>
+</div>
+`;
+          }
+        },
+      ]
+    })
+  </script>
+{% endblock %}

@@ -21,6 +21,10 @@ class MappingView(TemplateView):
     template_name = "mapping_page.html"
 
 
+class MappingScheduleFormView(TemplateView):
+    template_name = "mapping_schedule_form.html"
+
+
 class ReportView(TemplateView):
     template_name = "report_page.html"
 
@@ -120,6 +124,14 @@ def mapping_tasks_competed_table_json(request):
          "duration": "00:00", "hadmatch": "-", "timestamp": "2025-03-19 10:00:11", "initiator": "Кузьмин РМ"},
         {"id": 1, "source": "Строительный двор - OBI", "state": "Завершена", "status": "Ошибка", "duration": "00:00",
          "hadmatch": "-", "timestamp": "2025-03-19 10:00:11", "initiator": "Кузьмин РМ"},
+    ]
+
+    return JsonResponse(data, safe=False)
+
+
+def mapping_scheduled_tasks_table_json(request):
+    data = [
+        {"id": 3, "main_source": "Строительный двор", "other_sources": "OBI, Петрович", "cron": "59 23 * * 0", "initiator": "Кузьмин РМ"},
     ]
 
     return JsonResponse(data, safe=False)

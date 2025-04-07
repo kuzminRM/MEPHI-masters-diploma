@@ -4,15 +4,14 @@
 {% block title %}аИССТ: Сопоставление{% endblock %}
 
 {% block breadcrumb %}
-  <li class="breadcrumb-item"><a href="">Главная</a>
-  </li>
-  <li class="breadcrumb-item active"><span>Сопоставление</span>
-  </li>
+  <li class="breadcrumb-item"><a href="">Главная</a></li>
+  <li class="breadcrumb-item active"><span>Сопоставление</span></li>
 {% endblock %}
 
 {% block content %}
   <h1><i class="fa-solid fa-code-compare"></i> Сопоставление</h1>
   <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> Запустить сопоставление</button>
+  <a class="btn btn-primary" href="{% url 'django_ui:mapping_schedule_form' %}"><i class="fa-solid fa-clock"></i> Запланировать сопоставление</a>
   <hr>
   <table id="mapping_tasks_competed_table"
          data-buttons="buttons"
